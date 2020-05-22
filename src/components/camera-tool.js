@@ -380,11 +380,12 @@ AFRAME.registerComponent("camera-tool", {
       const context = THREE.AudioContext.getContext();
       const oscillator = context.createOscillator();
       const gain = context.createGain();
-      const destination = context.createMediaStreamDestination();
-      gain.gain.setValueAtTime(0.0001, context.currentTime);
-      oscillator.connect(destination);
-      gain.connect(destination);
-      stream.addTrack(destination.stream.getAudioTracks()[0]);
+      //const destination = context.createMediaStreamDestination();
+        gain.gain.setValueAtTime(0.0001, context.currentTime);
+        console.log("jdm attachblankaudio");
+      //oscillator.connect(destination);
+      //gain.connect(destination);
+      //stream.addTrack(destination.stream.getAudioTracks()[0]);
     };
 
     if (this.data.captureAudio) {
@@ -395,17 +396,18 @@ AFRAME.registerComponent("camera-tool", {
       // So for now, if we don't have a track, just disable audio capture.
       if (selfAudio && selfAudio.getAudioTracks().length > 0) {
         const context = THREE.AudioContext.getContext();
-        const destination = context.createMediaStreamDestination();
+        //const destination = context.createMediaStreamDestination();
 
         const listener = this.el.sceneEl.audioListener;
         if (listener) {
           // NOTE audio is not captured from camera vantage point for now.
-          listener.getInput().connect(destination);
+          //listener.getInput().connect(destination);
         }
-        context.createMediaStreamSource(selfAudio).connect(destination);
+          console.log("jdm captureaudio");
+        //context.createMediaStreamSource(selfAudio).connect(destination);
 
-        const audio = destination.stream.getAudioTracks()[0];
-        stream.addTrack(audio);
+        //const audio = destination.stream.getAudioTracks()[0];
+        //stream.addTrack(audio);
       } else {
         attachBlankAudio();
       }

@@ -161,6 +161,7 @@ import "./gltf-component-mappings";
 import { App } from "./App";
 import { platformUnsupported } from "./support";
 
+console.log("jdm app!");
 window.APP = new App();
 window.APP.RENDER_ORDER = {
   HUD_BACKGROUND: 1,
@@ -354,6 +355,7 @@ function setupPeerConnectionConfig(adapter, host, turn) {
 }
 
 async function updateEnvironmentForHub(hub, entryManager) {
+    console.log("jdm: updateEnvironmentForHub");
   let sceneUrl;
   let isLegacyBundle; // Deprecated
 
@@ -732,7 +734,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     (document.location.pathname === "/" && defaultRoomId
       ? defaultRoomId
       : document.location.pathname.substring(1).split("/")[0]);
-  console.log(`Hub ID: ${hubId}`);
+  console.log(`Hub ID: ${hubId} jdm`);
 
   if (!defaultRoomId) {
     // Default room won't work if account is required to access
@@ -766,16 +768,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   scene
     .querySelector("#batch-prep")
     .setAttribute("media-image", { batch: true, src: initialBatchImage, contentType: "image/png" });
+    console.log("jdm: initial batch-prep");
 
   const onSceneLoaded = () => {
+    console.log("jdm: onsceneloaded");
     const physicsSystem = scene.systems["hubs-systems"].physicsSystem;
     physicsSystem.setDebug(isDebug || physicsSystem.debug);
     patchThreeAllocations();
+    console.log("jdm: done onsceneloaded");
   };
 
   if (scene.hasLoaded) {
+    console.log("jdm: scene has loaded");
     onSceneLoaded();
   } else {
+    console.log("jdm: scene has not loaded");
     scene.addEventListener("loaded", onSceneLoaded, { once: true });
   }
 
@@ -784,11 +791,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!avatarSrc) {
     await store.resetToRandomDefaultAvatar();
   }
+    console.log("jdm: starting network setup");
 
   const authChannel = new AuthChannel(store);
   const hubChannel = new HubChannel(store, hubId);
   const entryManager = new SceneEntryManager(hubChannel, authChannel, history);
   const performConditionalSignIn = async (predicate, action, messageId, onFailure) => {
+    console.log("jdm: performconditionalsignin");
     if (predicate()) return action();
 
     const signInContinueTextId = scene.is("vr-mode") ? "entry.return-to-vr" : "dialog.close";
@@ -885,6 +894,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   });
 
+    console.log("jdm: remounting");
   remountUI({
     performConditionalSignIn,
     embed: isEmbed,
@@ -981,7 +991,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   });
-
+    console.log("jdm: registering network schemas");
   registerNetworkSchemas();
 
   remountUI({
@@ -1271,6 +1281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   hubPhxChannel
     .join()
     .receive("ok", async data => {
+        console.log("jdm: received ok");
       socket.params().session_id = data.session_id;
       socket.params().session_token = data.session_token;
 
@@ -1443,12 +1454,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           oscillator = ctx.createOscillator();
           const gain = ctx.createGain();
           gain.gain.setValueAtTime(0.01, ctx.currentTime);
-          const dest = ctx.createMediaStreamDestination();
+          //const dest = ctx.createMediaStreamDestination();
           oscillator.connect(gain);
-          gain.connect(dest);
+          //gain.connect(dest);
           oscillator.start();
-          const stream = dest.stream;
-          track = stream.getAudioTracks()[0];
+          /*const stream = dest.stream;
+          track = stream.getAudioTracks()[0];*/
         }
 
         adapter.setClientId(socket.params().session_id);

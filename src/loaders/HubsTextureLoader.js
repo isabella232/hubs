@@ -22,7 +22,7 @@ export default class HubsTextureLoader {
   async loadTextureAsync(texture, src, onProgress) {
     let imageLoader;
 
-    if (window.createImageBitmap !== undefined) {
+    if (false && window.createImageBitmap !== undefined) {
       imageLoader = new THREE.ImageBitmapLoader(this.manager);
       texture.flipY = false;
     } else {

@@ -1029,6 +1029,8 @@ AFRAME.registerComponent("media-image", {
     const batchManagerSystem = this.el.sceneEl.systems["hubs-systems"].batchManagerSystem;
 
     try {
+        console.log("trying to get src from");
+        console.log(JSON.stringify(this.data));
       const { src, version, contentType } = this.data;
       if (!src) return;
 

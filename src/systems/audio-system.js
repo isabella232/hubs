@@ -14,6 +14,7 @@ async function enableChromeAEC(gainNode) {
   audioEl.setAttribute("autoplay", "autoplay");
   audioEl.setAttribute("playsinline", "playsinline");
 
+    console.log("jdm enablechromeaec");
   const context = THREE.AudioContext.getContext();
   const loopbackDestination = context.createMediaStreamDestination();
   const outboundPeerConnection = new RTCPeerConnection();
@@ -68,14 +69,15 @@ export class AudioSystem {
 
     this.audioContext = THREE.AudioContext.getContext();
     this.audioNodes = new Map();
-    this.mediaStreamDestinationNode = this.audioContext.createMediaStreamDestination();
-    this.outboundStream = this.mediaStreamDestinationNode.stream;
+      console.log("jdm audiosystem");
+    //this.mediaStreamDestinationNode = this.audioContext.createMediaStreamDestination();
+    //this.outboundStream = this.mediaStreamDestinationNode.stream;
     this.outboundGainNode = this.audioContext.createGain();
     this.outboundAnalyser = this.audioContext.createAnalyser();
     this.outboundAnalyser.fftSize = 32;
     this.analyserLevels = new Uint8Array(this.outboundAnalyser.fftSize);
     this.outboundGainNode.connect(this.outboundAnalyser);
-    this.outboundAnalyser.connect(this.mediaStreamDestinationNode);
+    //this.outboundAnalyser.connect(this.mediaStreamDestinationNode);
 
     /**
      * Chrome and Safari will start Audio contexts in a "suspended" state.

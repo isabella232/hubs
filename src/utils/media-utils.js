@@ -432,6 +432,8 @@ export async function createImageTexture(url, filter) {
     try {
       await textureLoader.loadTextureAsync(texture, url);
     } catch (e) {
+        console.log("texture load error");
+        console.log(JSON.stringify(e));
       throw new Error(`'${url}' could not be fetched (Error code: ${e.status}; Response: ${e.statusText})`);
     }
   }
