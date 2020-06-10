@@ -320,9 +320,11 @@ function setupPeerConnectionConfig(adapter, host, turn) {
   const forceTcp = qs.get("force_tcp");
   const peerConnectionConfig = {};
 
+          console.log("jdm setuppeer");
   if (turn && turn.enabled) {
     const iceServers = [];
 
+      console.log("jdm " + JSON.stringify(turn));
     turn.transports.forEach(ts => {
       // Try both TURN DTLS and TCP/TLS
       if (!forceTcp) {
@@ -351,6 +353,7 @@ function setupPeerConnectionConfig(adapter, host, turn) {
     ];
   }
 
+      console.log("jdm setpeerconnectionconfig");
   adapter.setPeerConnectionConfig(peerConnectionConfig);
 }
 
@@ -643,23 +646,26 @@ function handleHubChannelJoined(entryManager, hubChannel, messageDispatch, data)
     const loadEnvironmentAndConnect = () => {
       updateEnvironmentForHub(hub, entryManager);
       function onConnectionError() {
-        console.error("Unknown error occurred while attempting to connect to networked scene.");
+        console.error("jdm1 Unknown error occurred while attempting to connect to networked scene.");
         remountUI({ roomUnavailableReason: "connect_error" });
         entryManager.exitScene();
       }
-
+        console.log("jdm!!!!!! " + window.js_backtrace);
       const connectionErrorTimeout = setTimeout(onConnectionError, 90000);
+        console.log("jdm about to connect");
       scene.components["networked-scene"]
         .connect()
         .then(() => {
+        console.log("jdm successfuly connected");
           clearTimeout(connectionErrorTimeout);
           scene.emit("didConnectToNetworkedScene");
         })
         .catch(connectError => {
+        console.log("jdm connection error");
           clearTimeout(connectionErrorTimeout);
           // hacky until we get return codes
           const isFull = connectError.msg && connectError.msg.match(/\bfull\b/i);
-          console.error(connectError);
+          console.error("jdm2 " + connectError);
           remountUI({ roomUnavailableReason: isFull ? "full" : "connect_error" });
           entryManager.exitScene();
 
@@ -1454,17 +1460,23 @@ document.addEventListener("DOMContentLoaded", async () => {
           oscillator = ctx.createOscillator();
           const gain = ctx.createGain();
           gain.gain.setValueAtTime(0.01, ctx.currentTime);
+          console.log("jdm create media stream (!!!)");
           //const dest = ctx.createMediaStreamDestination();
           oscillator.connect(gain);
+          console.log("jdm osc connected");
           //gain.connect(dest);
           oscillator.start();
+          console.log("jdm osc started");
           /*const stream = dest.stream;
           track = stream.getAudioTracks()[0];*/
         }
 
+          console.log("jdm setclientid");
         adapter.setClientId(socket.params().session_id);
+          console.log("jdm setjointoken");
         adapter.setJoinToken(data.perms_token);
         setupPeerConnectionConfig(adapter, janusHost, janusTurn);
+          console.log("jdm finish setup peer");
 
         hubChannel.addEventListener("permissions-refreshed", e => adapter.setJoinToken(e.detail.permsToken));
 
