@@ -352,12 +352,16 @@ export default class DialogAdapter {
     debug("_joinRoom()");
 
     try {
+        console.log("xxxjdm creating device");
       this._mediasoupDevice = new mediasoupClient.Device({});
 
+        console.log("xxxjdm getting capabilities");
       const routerRtpCapabilities = await this._protoo.request("getRouterRtpCapabilities");
 
+        console.log("xxxjdm loading");
       await this._mediasoupDevice.load({ routerRtpCapabilities });
 
+        console.log("xxxjdm requesting");
       // Create mediasoup Transport for sending (unless we don't want to produce).
       const sendTransportInfo = await this._protoo.request("createWebRtcTransport", {
         forceTcp: this._forceTcp,
@@ -366,6 +370,7 @@ export default class DialogAdapter {
         sctpCapabilities: undefined
       });
 
+        console.log("xxxjdm creating transport");
       this._sendTransport = this._mediasoupDevice.createSendTransport({
         id: sendTransportInfo.id,
         iceParameters: sendTransportInfo.iceParameters,
@@ -407,6 +412,7 @@ export default class DialogAdapter {
         }
       });
 
+        console.log("xxxjdm creating receive transport info");
       // Create mediasoup Transport for sending (unless we don't want to consume).
       const recvTransportInfo = await this._protoo.request("createWebRtcTransport", {
         forceTcp: this._forceTcp,
@@ -415,6 +421,7 @@ export default class DialogAdapter {
         sctpCapabilities: undefined
       });
 
+        console.log("xxxjdm creating receive transport");
       this._recvTransport = this._mediasoupDevice.createRecvTransport({
         id: recvTransportInfo.id,
         iceParameters: recvTransportInfo.iceParameters,
@@ -438,6 +445,7 @@ export default class DialogAdapter {
           .catch(errback);
       });
 
+        console.log("xxxjdm joining");
       const { peers } = await this._protoo.request("join", {
         displayName: this._clientId,
         device: this._device,
@@ -449,6 +457,7 @@ export default class DialogAdapter {
       const audioConsumerPromises = [];
       this.occupants = {};
 
+        console.log("xxxjdm creating promises");
       // Create a promise that will be resolved once we attach to all the initial consumers.
       // This will gate the connection flow until all voices will be heard.
       for (let i = 0; i < peers.length; i++) {
@@ -459,6 +468,7 @@ export default class DialogAdapter {
         audioConsumerPromises.push(new Promise(res => this._initialAudioConsumerResolvers.set(peerId, res)));
       }
 
+        console.log("xxxjdm connectsuccess");
       this._connectSuccess(this._clientId);
       this._initialAudioConsumerPromise = Promise.all(audioConsumerPromises);
 
@@ -467,9 +477,11 @@ export default class DialogAdapter {
       }
 
       if (this._localMediaStream) {
+        console.log("xxxjdm creating missing producers");
         this.createMissingProducers(this._localMediaStream);
       }
     } catch (err) {
+        console.log("xxxjdm _joinroom: " + JSON.stringify(err))
       error("_joinRoom() failed:%o", err);
 
       this.disconnect();
@@ -485,6 +497,7 @@ export default class DialogAdapter {
     let sawAudio = false;
     let sawVideo = false;
 
+        console.log("xxxjdm getting tracks");
     stream.getTracks().forEach(async track => {
       if (track.kind === "audio") {
         sawAudio = true;
@@ -537,6 +550,8 @@ export default class DialogAdapter {
 
       this.resolvePendingMediaRequestForTrack(this._clientId, track);
     });
+
+        console.log("xxxjdm got tracks");
 
     if (!sawAudio && this._micProducer) {
       this._micProducer.close();

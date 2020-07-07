@@ -8,6 +8,7 @@ export class KeyboardDevice {
 
     ["keydown", "keyup"].map(x =>
       document.addEventListener(x, e => {
+          console.log(x + ": " + e.key);
         if (!e.key) return;
         this.events.push(e);
 
@@ -30,6 +31,7 @@ export class KeyboardDevice {
               e.key === "0")) ||
           (e.key === "Tab" && !(window.APP && window.APP.preferenceScreenIsVisible))
         ) {
+            console.log("preventing");
           e.preventDefault();
           return false;
         }

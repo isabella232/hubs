@@ -102,6 +102,7 @@ const LOBBY_MODAL_QUERY_VARS = ["media_source"];
 const LOBBY_MODAL_QUERY_VALUES = ["scenes", "avatars", "favorites"];
 
 async function grantedMicLabels() {
+    console.log("jdm grantedmiclabels");
   const mediaDevices = await navigator.mediaDevices.enumerateDevices();
   return mediaDevices.filter(d => d.label && d.kind === "audioinput").map(d => d.label);
 }
@@ -1200,6 +1201,7 @@ class UIRoot extends Component {
   };
 
   renderDevicePanel = () => {
+      console.log("renderdevicepanel");
     return (
       <div className={entryStyles.entryPanel}>
         <div
@@ -1259,6 +1261,7 @@ class UIRoot extends Component {
   };
 
   renderMicPanel = granted => {
+      console.log("rendermicpanel");
     return (
       <div className="mic-grant-panel">
         <div onClick={() => this.props.history.goBack()} className={entryStyles.back}>
